@@ -5,35 +5,29 @@ import com.alem.todolist.controller.ToDoListController;
 import com.alem.todolist.model.Task;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.service.ToDoListService;
-import com.alem.todolist.service.ToDoListServiceImplementation;
-import com.sun.source.tree.ModuleTree;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @WebMvcTest(ToDoListController.class)
-@WebAppConfiguration("classpath:META-INF/web-resources")
 public class ToDoListControllerTest {
 
     @MockBean
@@ -66,14 +60,34 @@ public class ToDoListControllerTest {
                         .accept("application/json"))
                         .andExpect(status().isOk());
     }
-
     @Test
-    void shouldReturnAllTasks() throws Exception  {
-        List<Task> tasks = toDoListService.fetchAllTasks();
+    void shouldReturnAllTasks() throws Exception {
+        List<Task> tasks = new ArrayList<Task>();
+        Task one = new Task();
+        Task two = new Task();
+        Task three = new Task();
+        one.setId(1L);
+        one.setDate("3/11/2022");
+        one.setDesc("test one");
+        one.setGroup("work");
+        one.setLocation("office");
+        two.setId(2L);
+        two.setDate("3/11/2022");
+        two.setDesc("test two");
+        two.setGroup("work");
+        two.setLocation("office");
+        three.setId(3L);
+        three.setDate("3/11/2022");
+        three.setDesc("test three");
+        three.setGroup("work");
+        three.setLocation("office");
+        tasks.add(one);
+        tasks.add(two);
+        tasks.add(three);
         when(toDoListRepository.findAll()).thenReturn(tasks);
-        this.mockmvc.perform(get("/tasks").accept("application/json"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(7)))
-                .andExpect(status().isOk());
+        List<Task> taskList = toDoListRepository.findAll();
+        assertEquals(3, taskList.size());
+        verify(toDoListRepository, times(1)).findAll();
     }
 
 
