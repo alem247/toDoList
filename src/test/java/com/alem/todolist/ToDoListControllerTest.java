@@ -5,13 +5,21 @@ import com.alem.todolist.controller.ToDoListController;
 import com.alem.todolist.model.Task;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.service.ToDoListService;
+import com.alem.todolist.service.ToDoListServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -26,27 +34,22 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
+@RunWith(SpringRunner.class)
 @WebMvcTest(ToDoListController.class)
 public class ToDoListControllerTest {
 
     @MockBean
-    private ToDoListRepository toDoListRepository;
+    ToDoListRepository toDoListRepository;
 
-    @MockBean
-    private ToDoListService toDoListService;
-
-    @Autowired
-    WebApplicationContext wac;
+    @InjectMocks
+    ToDoListService toDoListService = new ToDoListServiceImpl(toDoListRepository);
 
     @Autowired
     private MockMvc mockmvc;
-
     @BeforeEach
-    void setup(WebApplicationContext wac) {
-        this.mockmvc = MockMvcBuilders.webAppContextSetup(wac).build();
+    void setup() {
+        MockitoAnnotations.initMocks(this);
     }
-
     @Test
     void shouldCreateMockMvc(){
         assertNotNull(mockmvc);
@@ -62,32 +65,13 @@ public class ToDoListControllerTest {
     }
     @Test
     void shouldReturnAllTasks() throws Exception {
-        List<Task> tasks = new ArrayList<Task>();
-        Task one = new Task();
-        Task two = new Task();
-        Task three = new Task();
-        one.setId(1L);
-        one.setDate("3/11/2022");
-        one.setDesc("test one");
-        one.setGroup("work");
-        one.setLocation("office");
-        two.setId(2L);
-        two.setDate("3/11/2022");
-        two.setDesc("test two");
-        two.setGroup("work");
-        two.setLocation("office");
-        three.setId(3L);
-        three.setDate("3/11/2022");
-        three.setDesc("test three");
-        three.setGroup("work");
-        three.setLocation("office");
-        tasks.add(one);
-        tasks.add(two);
-        tasks.add(three);
+
+        List<Task> tasks = toDoListService.fetchAllTasks();
         when(toDoListRepository.findAll()).thenReturn(tasks);
-        List<Task> taskList = toDoListRepository.findAll();
-        assertEquals(3, taskList.size());
-        verify(toDoListRepository, times(1)).findAll();
+        this.mockmvc.perform(MockMvcRequestBuilders.get("/tasks"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(tasks.size())))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
     }
 
 

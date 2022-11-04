@@ -1,5 +1,6 @@
 package com.alem.todolist.service;
 
+import com.alem.todolist.exceptions.MissingArgumentException;
 import com.alem.todolist.model.Task;
 import com.alem.todolist.repository.ToDoListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,4 +13,5 @@ public interface ToDoListService {
 
      public List<Task> fetchAllTasks();
 
+     public int countTasksForToday(String date) throws MissingArgumentException;
 }
