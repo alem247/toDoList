@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.Instant;
 
 @Getter @Setter
 @ToString @NoArgsConstructor
@@ -20,7 +21,7 @@ public class Task {
     private String desc; // task description
 
     @Column(name = "date")
-    private String date; // task due date
+    private Instant date; // task due date
 
     @Column(name = "location")
     private String location; // task location
