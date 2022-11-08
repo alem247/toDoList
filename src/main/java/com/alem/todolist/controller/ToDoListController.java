@@ -5,8 +5,10 @@ import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 @EnableJpaRepositories("com.alem.todolist.repository")
@@ -32,7 +34,9 @@ public class ToDoListController {
     }
 
     // task: id, desc, date, location, group
-    @PostMapping
+    @PostMapping(consumes = "application/json",
+            produces = "application/json")
+    @ResponseBody
     public void addTask(Task task){
         toDoListRepository.save(task);
     }
