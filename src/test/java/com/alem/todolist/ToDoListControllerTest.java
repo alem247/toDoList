@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -68,19 +69,19 @@ public class ToDoListControllerTest {
         Task test3 = new Task();
         test1.setId(1L);
         test1.setDesc("test11");
-        test1.setDate(currentDate.toInstant());
+        test1.setDate(LocalDate.parse("2022-10-26"));
         test1.setLocation("home");
-        test1.setGroup(GroupType.valueOf("personal"));
+        test1.setGroup(GroupType.valueOf("PERSONAL"));
         test2.setId(2L);
         test2.setDesc("test22");
-        test2.setDate(currentDate.toInstant());
+        test2.setDate(LocalDate.parse("2022-10-26"));
         test2.setLocation("home");
-        test2.setGroup(GroupType.valueOf("work"));
+        test2.setGroup(GroupType.valueOf("WORK"));
         test3.setId(3L);
         test3.setDesc("test33");
-        test3.setDate(currentDate.toInstant());
+        test3.setDate(LocalDate.parse("2022-10-26"));
         test3.setLocation("home");
-        test3.setGroup(GroupType.valueOf("study"));
+        test3.setGroup(GroupType.valueOf("STUDY"));
         List<Task> tasks = Arrays.asList(test1, test2, test3);
         when(toDoListRepository.findAll()).thenReturn(tasks);
         toDoListController.addTask(test1);
@@ -114,16 +115,14 @@ public class ToDoListControllerTest {
 
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-        mapper.registerModule(javaTimeModule);
         mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
         long now = System.currentTimeMillis();
         Date currentDate = new Date(now);
         Task task = new Task();
         task.setId(55L);
         task.setDesc("testadding");
-        task.setDate(currentDate.toInstant());
-        task.setGroup(GroupType.valueOf("work"));
+        task.setDate(LocalDate.parse("2022-10-26"));
+        task.setGroup(GroupType.valueOf("WORK"));
         task.setLocation("home");
         when(toDoListRepository.save(any(Task.class))).thenReturn(task);
         this.mockmvc.perform(

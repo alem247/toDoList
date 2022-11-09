@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Getter @Setter
 @ToString @NoArgsConstructor
@@ -11,16 +12,16 @@ import java.time.Instant;
 @Table(name = "tasks", schema = "public")
 public class Task {
     @Id
-    @Column(name = "id")
+    @Column(name = "id", length = 32, nullable = false)
     private Long id;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 32, nullable = false)
     private String desc; // task description
 
-    @Column(name = "date")
-    private Instant date; // task due date
+    @Column(name = "date", nullable = false)
+    private LocalDate date; // task due date
 
-    @Column(name = "location")
+    @Column(name = "location", length = 32, nullable = false)
     private String location; // task location
 
 
