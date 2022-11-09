@@ -34,11 +34,9 @@ public class ToDoListController {
     }
 
     // task: id, desc, date, location, group
-    @PostMapping(consumes = "application/json",
-            produces = "application/json")
-    @ResponseBody
-    public void addTask(Task task){
-        toDoListRepository.save(task);
+    @PostMapping(produces = "application/json")
+    public Task addTask(Task task){
+        return toDoListRepository.save(task);
     }
 
     @DeleteMapping("/{id}")

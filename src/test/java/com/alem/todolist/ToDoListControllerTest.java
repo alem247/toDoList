@@ -58,6 +58,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class ToDoListControllerTest {
 
+    @Autowired
+    private ObjectMapper mapper;
+
     @MockBean
     private ToDoListRepository toDoListRepository;
     @InjectMocks
@@ -122,7 +125,6 @@ public class ToDoListControllerTest {
 
     @Test
     void shouldAddTask() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         JavaTimeModule javaTimeModule = new JavaTimeModule();
@@ -141,7 +143,7 @@ public class ToDoListControllerTest {
                 .content(mapper.writeValueAsString(task)).contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(content().contentType("application/json"));
     }
 
     @Test
