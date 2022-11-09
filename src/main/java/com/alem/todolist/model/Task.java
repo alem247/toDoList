@@ -2,10 +2,7 @@ package com.alem.todolist.model;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 
 @Getter @Setter
@@ -26,7 +23,11 @@ public class Task {
     @Column(name = "location")
     private String location; // task location
 
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "group")
-    private String group; // work, exercise, etc.
+    private GroupType group; // work, exercise, etc.
+
+
 
 }
