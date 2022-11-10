@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
@@ -69,17 +70,17 @@ public class ToDoListControllerTest {
         Task test3 = new Task();
         test1.setId(1L);
         test1.setDesc("test11");
-        test1.setDate(LocalDate.parse("2022-10-26"));
+        test1.setDate(Instant.from(LocalDate.parse("2022-10-26")));
         test1.setLocation("home");
         test1.setGroup(GroupType.valueOf("PERSONAL"));
         test2.setId(2L);
         test2.setDesc("test22");
-        test2.setDate(LocalDate.parse("2022-10-26"));
+        test2.setDate(Instant.from(LocalDate.parse("2022-10-26")));
         test2.setLocation("home");
         test2.setGroup(GroupType.valueOf("WORK"));
         test3.setId(3L);
         test3.setDesc("test33");
-        test3.setDate(LocalDate.parse("2022-10-26"));
+        test3.setDate(Instant.from(LocalDate.parse("2022-10-26")));
         test3.setLocation("home");
         test3.setGroup(GroupType.valueOf("STUDY"));
         List<Task> tasks = Arrays.asList(test1, test2, test3);
@@ -121,7 +122,7 @@ public class ToDoListControllerTest {
         Task task = new Task();
         task.setId(55L);
         task.setDesc("testadding");
-        task.setDate(LocalDate.parse("2022-10-26"));
+        task.setDate(Instant.from(LocalDate.parse("2022-10-26")));
         task.setGroup(GroupType.valueOf("WORK"));
         task.setLocation("home");
         when(toDoListRepository.save(any(Task.class))).thenReturn(task);

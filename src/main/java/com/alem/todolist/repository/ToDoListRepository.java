@@ -15,8 +15,12 @@ public interface ToDoListRepository extends JpaRepository<Task, Long> {
 
     Optional<Task> findById(Long id);
 
-    @Query(value = "SELECT t FROM tasks t WHERE t.date =:queryDate", nativeQuery = true)
-    public String getTasksForGivenDate(LocalDate queryDate) throws IllegalArgumentException;
+    @Query(value = "SELECT t FROM tasks t WHERE t.date between ?1 and ?1 + INTERVAL '1 DAY'", nativeQuery = true)
+    String getTasksForGivenDate(Instant date) throws IllegalArgumentException;
+
+
+    @Query(value = "SELECT t FROM tasks t WHERE t.group =: ?1", nativeQuery = true)
+    String getTasksForGivenGroup(String group) throws IllegalArgumentException;
 
 
 }

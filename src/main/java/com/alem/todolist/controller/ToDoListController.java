@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +35,8 @@ public class ToDoListController {
         return this.toDoListRepository.findAll();
     }
 
+
+    // TODO: internal server error all of a sudden?
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String printTaskDetails(@PathVariable Long id) {
         return this.toDoListRepository.findById(id).get().toString();
@@ -43,12 +48,22 @@ public class ToDoListController {
         return toDoListRepository.save(task);
     }
 
-    @RequestMapping(value = "/{YYYY_MM_DD}", method = RequestMethod.GET)
-    public String printTasksForGivenDate(@PathVariable String YYYY_MM_DD){
-        String[] temp = YYYY_MM_DD.split("_");
-        String date = String.join("-", temp);
-        LocalDate dt = LocalDate.parse(date);
-        return toDoListRepository.getTasksForGivenDate(dt);
+    // TODO: fix IllegalStateException
+    @RequestMapping(value = "/{date}", method = RequestMethod.GET)
+    public String printTasksForGivenDate(@PathVariable String date){
+        String[] temp = date.split("_");
+        System.out.println(Arrays.toString(temp));
+        String x = String.join("-", temp);
+        System.out.println(x);
+        LocalDate ld = LocalDate.parse(x);
+        return toDoListRepository.getTasksForGivenDate(ld.atStartOfDay(ZoneId.of("Europe/Ljubljana")).toInstant());
+    }
+
+    // TODO: fix IllegalStateException
+
+    @RequestMapping(value="/{group}", method = RequestMethod.GET)
+    public String printTasksForGivenGroup(@PathVariable String group){
+       return toDoListRepository.getTasksForGivenGroup(group);
     }
 
     @DeleteMapping("/{id}")

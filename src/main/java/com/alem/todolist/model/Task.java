@@ -19,7 +19,7 @@ public class Task {
     private String desc; // task description
 
     @Column(name = "date", nullable = false)
-    private LocalDate date; // task due date
+    private Instant date; // task due date
 
     @Column(name = "location", length = 32, nullable = false)
     private String location; // task location
