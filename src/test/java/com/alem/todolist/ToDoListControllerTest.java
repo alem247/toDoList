@@ -144,4 +144,16 @@ public class ToDoListControllerTest {
         System.out.print(content);
     }
 
+    // TODO:
+    @Test
+    void shouldPrintTasksForGivenGroup() throws Exception {
+
+    }
+
+    // TODO:
+    @Test
+    void shouldPrintTasksForGivenDate() throws Exception {
+
+    }
+
 }

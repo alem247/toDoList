@@ -30,16 +30,16 @@ public class ToDoListController {
         this.toDoListRepository = toDoListRepository;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public List<Task> getTasks() {
         return this.toDoListRepository.findAll();
     }
 
 
-    // TODO: internal server error all of a sudden?
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String printTaskDetails(@PathVariable Long id) {
-        return this.toDoListRepository.findById(id).get().toString();
+
+    @GetMapping(value = "/{id}")
+    public Task printTaskDetails(@PathVariable Long id) {
+        return this.toDoListRepository.findById(id).get();
     }
 
     // task: id, desc, date, location, group
@@ -48,9 +48,8 @@ public class ToDoListController {
         return toDoListRepository.save(task);
     }
 
-    // TODO: fix IllegalStateException
-    @RequestMapping(value = "/{date}", method = RequestMethod.GET)
-    public String printTasksForGivenDate(@PathVariable String date){
+    @GetMapping(value = "/forDay/{date}")
+    public List<Task> printTasksForGivenDate(@PathVariable String date){
         String[] temp = date.split("_");
         System.out.println(Arrays.toString(temp));
         String x = String.join("-", temp);
@@ -59,10 +58,9 @@ public class ToDoListController {
         return toDoListRepository.getTasksForGivenDate(ld.atStartOfDay(ZoneId.of("Europe/Ljubljana")).toInstant());
     }
 
-    // TODO: fix IllegalStateException
 
-    @RequestMapping(value="/{group}", method = RequestMethod.GET)
-    public String printTasksForGivenGroup(@PathVariable String group){
+    @GetMapping(value ="/forGroup/{group}")
+    public List<Task> printTasksForGivenGroup(@PathVariable String group){
        return toDoListRepository.getTasksForGivenGroup(group);
     }
 
