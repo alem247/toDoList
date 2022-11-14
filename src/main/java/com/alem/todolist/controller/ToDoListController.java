@@ -36,7 +36,6 @@ public class ToDoListController {
     }
 
 
-
     @GetMapping(value = "/{id}")
     public Task printTaskDetails(@PathVariable Long id) {
         return this.toDoListRepository.findById(id).get();

@@ -17,7 +17,7 @@ public interface ToDoListRepository extends JpaRepository<Task, Long> {
 
     Optional<Task> findById(Long id);
 
-    @Query(value = "SELECT * FROM tasks t WHERE DATE(t.date) = DATE(?1)", nativeQuery = true)
+    @Query(value = "SELECT * FROM tasks t WHERE DATE(t.date) between DATE(?1) and DATE(?1) + INTERVAL '1 day'", nativeQuery = true)
     List<Task> getTasksForGivenDate(Instant date);
 
 

@@ -159,7 +159,7 @@ public class ToDoListControllerTest {
         List<Task> tasksgrp = List.of(testgroup1);
         when(toDoListRepository.getTasksForGivenGroup(anyString())).thenReturn(tasksgrp);
         this.mockmvc.perform(MockMvcRequestBuilders.get("/tasks/forGroup/PERSONAL").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$", hasSize(1)));
@@ -177,7 +177,7 @@ public class ToDoListControllerTest {
         List<Task> testdates = List.of(testdate);
         when(toDoListRepository.getTasksForGivenDate(any(Instant.class))).thenReturn(testdates);
         this.mockmvc.perform(MockMvcRequestBuilders.get("/tasks/forDay/2022_10_26").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$", hasSize(1)));
