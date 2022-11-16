@@ -6,11 +6,9 @@ import com.alem.todolist.exceptions.InvalidGroupException;
 import com.alem.todolist.model.GroupType;
 import com.alem.todolist.model.Task;
 import com.alem.todolist.repository.ToDoListRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -33,7 +30,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -48,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(ToDoListController.class)
 @AutoConfigureMockMvc
-public class ToDoListControllerTest {
+public class ToDoListControllerTests {
 
     @Autowired
     private ObjectMapper mapper;
@@ -64,8 +60,6 @@ public class ToDoListControllerTest {
     //  // task: id, desc, date, location, group
     @BeforeEach
     void setup() throws InvalidGroupException {
-        long now = System.currentTimeMillis();
-        Date currentDate = new Date(now);
         MockitoAnnotations.openMocks(this);
         Task test1 = new Task();
         Task test2 = new Task();
@@ -120,7 +114,6 @@ public class ToDoListControllerTest {
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-        long now = System.currentTimeMillis();
         Task task = new Task();
         task.setId(55L);
         task.setDesc("testadding");

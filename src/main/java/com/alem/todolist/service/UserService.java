@@ -11,12 +11,12 @@ import java.util.Optional;
 @Service
 public interface UserService {
 
-    public List<User> fetchAllUsers();
-    public User addUser(User x);
-    public void removeUser(long id);
-    public void updateUsername(long id, String newUserName);
-    public void updatePhonenum(long id, String newPhoneNum);
-    public void updateAddress(long id, String newAddress);
+    List<User> fetchAllUsers();
+    User addUser(User x);
+    String removeUser(long id);
+    String updateUsername(long id, String newUserName);
+    String updatePhonenum(long id, String newPhoneNum);
+    String updateAddress(long id, String newAddress);
 
-    public List<Optional<Task>> fetchAllUserTasks(long id);
+    List<Optional<Task>> fetchAllUserTasks(long id);
 }

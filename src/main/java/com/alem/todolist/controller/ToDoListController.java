@@ -4,6 +4,7 @@ package com.alem.todolist.controller;
 import com.alem.todolist.exceptions.InvalidGroupException;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.model.Task;
+import com.alem.todolist.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@EnableJpaRepositories("com.alem.todolist.repository")
 @RestController
 @RequestMapping("/tasks")
 public class ToDoListController {
