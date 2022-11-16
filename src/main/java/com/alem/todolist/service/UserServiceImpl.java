@@ -6,12 +6,15 @@ import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.repository.UserRepository;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.events.Event;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
+@Service
 public class UserServiceImpl implements UserService{
 
     private UserRepository userRepository;
@@ -30,41 +33,46 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public User fetchUser(long id) {
+        return this.userRepository.findById(id);
+    }
+
+    @Override
     public User addUser(User x) {
         return this.userRepository.save(x);
     }
 
     @Override
     public String removeUser(long id) {
-        this.userRepository.delete(this.userRepository.findById(id).get());
+        this.userRepository.delete(this.userRepository.findById(id));
         return "User successfully removed.";
     }
 
     @Override
-    public String updateUsername(long id, String newUserName) {
-        this.userRepository.findById(id).get().setUsername(newUserName);
-        return "User: " + userRepository.findById(id).get().getName() + "has a new username: " + newUserName;
+    public User updateUsername(long id, String newUserName) {
+        this.userRepository.findById(id).setUsername(newUserName);
+        return this.userRepository.findById(id);
     }
 
     @Override
-    public String updatePhonenum(long id, String newPhoneNumber) {
-        this.userRepository.findById(id).get().setPhonenum(newPhoneNumber);
-        return "User: " + userRepository.findById(id).get().getName() + "has a new phone number: " + newPhoneNumber;
+    public User updatePhoneNumber(long id, String newPhoneNumber) {
+        this.userRepository.findById(id).setPhone_num(newPhoneNumber);
+        return this.userRepository.findById(id);
     }
 
     @Override
-    public String updateAddress(long id, String newAddress) {
-         this.userRepository.findById(id).get().setAddress(newAddress);
-        return "User: " + userRepository.findById(id).get().getName() + "has a new address: " + newAddress;
+    public User updateAddress(long id, String newAddress) {
+         this.userRepository.findById(id).setAddress(newAddress);
+        return this.userRepository.findById(id);
     }
 
     @Override
     public List<Optional<Task>> fetchAllUserTasks(long id) {
-         User temp = userRepository.findById(id).get();
+         User temp = userRepository.findById(id);
          List<Optional<Task>> userTasks = new ArrayList<>();
-         int k = temp.getUserTasks().length;
+         int k = temp.getUser_Tasks().length;
          for (int i = 0; i < k; i++){
-             long taskId = temp.getUserTasks()[i];
+             long taskId = temp.getUser_Tasks()[i];
              userTasks.add(toDoListRepository.findById((taskId)));
          }
          return userTasks;

@@ -14,7 +14,6 @@ import java.time.Instant;
 public class ErrorResponse {
 
     private String message;
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Instant timestamp;
     private HttpStatus status;
 

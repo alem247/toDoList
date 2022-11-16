@@ -22,9 +22,9 @@ public class User {
     @Column(name = "address", nullable = false)
     private String address;
     @Column(name = "phonenum", length = 32, nullable = false)
-    private String phonenum;
+    private String phone_num;
     @Column(name = "userTasks")
-    private int[] userTasks;
+    private int[] user_Tasks;
 
     public User() {
     }

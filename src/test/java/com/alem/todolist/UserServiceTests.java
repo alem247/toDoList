@@ -1,5 +1,4 @@
 package com.alem.todolist;
-import com.alem.todolist.model.Task;
 import com.alem.todolist.model.User;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.repository.UserRepository;
@@ -14,10 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -67,7 +64,7 @@ public class UserServiceTests {
     void shouldRemoveUser(){
         User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
                 "061932443", new int[]{5, 6, 7});
-        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(Isak));
+        when(userService.fetchUser(any(Long.class))).thenReturn(Isak);
         userService.removeUser(3L);
         String expectedReturnStatement = "User successfully removed.";
         assertEquals(expectedReturnStatement , userService.removeUser(3L));
@@ -78,35 +75,29 @@ public class UserServiceTests {
         User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
                 "061932443", new int[]{5, 6, 7});
         String newUsername = "test55";
-        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(Isak));
+        when(userService.fetchUser(any(Long.class))).thenReturn(Isak);
         userService.updateUsername(3, newUsername);
-        String expectedReturnStatement =
-                "User: " + userRepository.findById(3L).get().getName() + "has a new username: " + newUsername;
-        assertEquals(expectedReturnStatement, userService.updateUsername(3, newUsername));
+        assertEquals(Isak, userService.updateUsername(3, newUsername));
     }
 
     @Test
     void shouldUpdatePhonenum(){
         User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
                 "061932443", new int[]{5, 6, 7});
-        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(Isak));
+        when(userService.fetchUser(any(Long.class))).thenReturn(Isak);
         String newPhoneNumber = "062049980";
-        userService.updatePhonenum(3, "062049980");
-        String expectedReturnStatement = "User: " + userRepository.findById(3L).get().getName()  + "has a new phone number: " +
-                newPhoneNumber;
-        assertEquals(expectedReturnStatement, userService.updatePhonenum(3, newPhoneNumber));
+        userService.updatePhoneNumber(3, "062049980");
+        assertEquals(Isak, userService.updatePhoneNumber(3, newPhoneNumber));
     }
 
     @Test
     void shouldUpdateAddress(){
         User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
                 "061932443", new int[]{5, 6, 7});
-        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(Isak));
+        when(userService.fetchUser(any(Long.class))).thenReturn(Isak);
         String newAddress = "Gerbiceva 53";
         userService.updateAddress(3, newAddress);
-        String expectedReturnStatement = "User: " + userRepository.findById(3L).get().getName()  + "has a new address: " +
-                newAddress;
-        assertEquals(expectedReturnStatement, userService.updateAddress(3, newAddress));
+        assertEquals(Isak, userService.updateAddress(3, newAddress));
     }
 
 }

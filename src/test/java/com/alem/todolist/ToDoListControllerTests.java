@@ -6,6 +6,7 @@ import com.alem.todolist.exceptions.InvalidGroupException;
 import com.alem.todolist.model.GroupType;
 import com.alem.todolist.model.Task;
 import com.alem.todolist.repository.ToDoListRepository;
+import com.alem.todolist.service.ToDoListService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -14,10 +15,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,13 +49,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class ToDoListControllerTests {
 
-    @Autowired
+    @MockBean
     private ObjectMapper mapper;
-
     @MockBean
     private ToDoListRepository toDoListRepository;
+
+    @MockBean
+    private ToDoListService toDoListService;
+
     @InjectMocks
-    private ToDoListController toDoListController = new ToDoListController(toDoListRepository);
+    private ToDoListController toDoListController = new ToDoListController(toDoListRepository, toDoListService);
 
     @Autowired
     private MockMvc mockmvc;
@@ -81,15 +87,10 @@ public class ToDoListControllerTests {
         test3.setLocation("home");
         test3.setGroup(GroupType.valueOf("STUDY"));
         List<Task> tasks = Arrays.asList(test1, test2, test3);
-        when(toDoListRepository.findAll()).thenReturn(tasks);
+        when(toDoListService.fetchAllTasks()).thenReturn(tasks);
         toDoListController.addTask(test1);
         toDoListController.addTask(test2);
         toDoListController.addTask(test3);
-    }
-
-    @Test
-    void shouldCreateMockMvc() {
-        assertNotNull(mockmvc);
     }
 
     @Test
@@ -121,7 +122,7 @@ public class ToDoListControllerTests {
         task.setDate(ld.atStartOfDay(ZoneId.of("Europe/Ljubljana")).toInstant());
         task.setGroup(GroupType.valueOf("WORK"));
         task.setLocation("home");
-        when(toDoListRepository.save(any(Task.class))).thenReturn(task);
+        when(toDoListService.addNewTask(any(Task.class))).thenReturn(task);
         this.mockmvc.perform(
                         MockMvcRequestBuilders.post("/tasks").content(mapper.writeValueAsString(task)).
                                 contentType(MediaType.APPLICATION_JSON_VALUE).accept("application/json"))
@@ -150,7 +151,7 @@ public class ToDoListControllerTests {
         testgroup1.setLocation("home");
         testgroup1.setGroup(GroupType.valueOf("PERSONAL"));
         List<Task> tasksgrp = List.of(testgroup1);
-        when(toDoListRepository.getTasksForGivenGroup(anyString())).thenReturn(tasksgrp);
+        when(toDoListService.fetchTasksByGroup(anyString())).thenReturn(tasksgrp);
         this.mockmvc.perform(MockMvcRequestBuilders.get("/tasks/forGroup/PERSONAL").contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -168,7 +169,7 @@ public class ToDoListControllerTests {
         testdate.setLocation("home");
         testdate.setGroup(GroupType.valueOf("PERSONAL"));
         List<Task> testdates = List.of(testdate);
-        when(toDoListRepository.getTasksForGivenDate(any(Instant.class))).thenReturn(testdates);
+        when(toDoListService.fetchTasksByDate(any(Instant.class))).thenReturn(testdates);
         this.mockmvc.perform(MockMvcRequestBuilders.get("/tasks/forDay/2022_10_26").contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
