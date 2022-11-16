@@ -37,19 +37,11 @@ public class UserServiceTests {
 
     @BeforeEach
     void setup(){
-        ArrayList<Integer> alemtasks = new ArrayList<>();
-        ArrayList<Integer> benjtasks = new ArrayList<>();
-        alemtasks.add(1);
-        alemtasks.add(2);
-        alemtasks.add(3);
-        benjtasks.add(3);
-        benjtasks.add(4);
-        benjtasks.add(5);
         MockitoAnnotations.openMocks(this);
         User Alem = new User(1, "Alem", "Čaušević", "alem247", "Badjurova ulica 3",
-                "070314180", alemtasks);
+                "070314180", new int[]{1, 2, 3});
         User Benjamin = new User(2, "Benjamin", "Midzic", "benjobenjo", "kod a faze",
-                "062699996", benjtasks);
+                "062699996", new int[]{3, 4, 5});
         List<User> users = Arrays.asList(Alem, Benjamin);
         when(userRepository.findAll()).thenReturn(users);
         userRepository.save(Alem);
@@ -65,56 +57,56 @@ public class UserServiceTests {
 
     @Test
     void shouldAddUser(){
-        ArrayList<Integer> isaktasks = new ArrayList<>();
-        isaktasks.add(5);
-        isaktasks.add(6);
-        isaktasks.add(7);
         User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
-                "061932443", isaktasks);
+                "061932443", new int[]{5, 6, 7});
         when(userService.addUser(Isak)).thenReturn(Isak);
         assertEquals(Isak, userService.addUser(Isak));
     }
 
     @Test
     void shouldRemoveUser(){
-        userService.removeUser(1);
+        User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
+                "061932443", new int[]{5, 6, 7});
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(Isak));
+        userService.removeUser(3L);
         String expectedReturnStatement = "User successfully removed.";
-        assertEquals(expectedReturnStatement , userService.removeUser(1));
+        assertEquals(expectedReturnStatement , userService.removeUser(3L));
     }
 
     @Test
     void shouldUpdateUsername(){
+        User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
+                "061932443", new int[]{5, 6, 7});
         String newUsername = "test55";
-        userService.updateUsername(1, newUsername);
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(Isak));
+        userService.updateUsername(3, newUsername);
         String expectedReturnStatement =
-                "User: " + userRepository.findById(1).getName() + "has a new username: " + newUsername;
-        assertEquals(expectedReturnStatement, userService.updateUsername(1, newUsername));
+                "User: " + userRepository.findById(3L).get().getName() + "has a new username: " + newUsername;
+        assertEquals(expectedReturnStatement, userService.updateUsername(3, newUsername));
     }
 
     @Test
     void shouldUpdatePhonenum(){
+        User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
+                "061932443", new int[]{5, 6, 7});
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(Isak));
         String newPhoneNumber = "062049980";
-        userService.updatePhonenum(1, "062049980");
-        String expectedReturnStatement = "User: " + userRepository.findById(1).getName()  + "has a new phone number: " +
+        userService.updatePhonenum(3, "062049980");
+        String expectedReturnStatement = "User: " + userRepository.findById(3L).get().getName()  + "has a new phone number: " +
                 newPhoneNumber;
-        assertEquals(expectedReturnStatement, userService.updatePhonenum(1, newPhoneNumber));
+        assertEquals(expectedReturnStatement, userService.updatePhonenum(3, newPhoneNumber));
     }
 
     @Test
     void shouldUpdateAddress(){
+        User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
+                "061932443", new int[]{5, 6, 7});
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(Isak));
         String newAddress = "Gerbiceva 53";
-        userService.updateAddress(1, newAddress);
-        String expectedReturnStatement = "User: " + userRepository.findById(1).getName()  + "has a new address: " +
+        userService.updateAddress(3, newAddress);
+        String expectedReturnStatement = "User: " + userRepository.findById(3L).get().getName()  + "has a new address: " +
                 newAddress;
-        assertEquals(expectedReturnStatement, userService.updateAddress(1, newAddress));
+        assertEquals(expectedReturnStatement, userService.updateAddress(3, newAddress));
     }
-
-    @Test
-    void shouldFetchAllUserTasks(){
-        List<Optional<Task>> AlemTasks = userService.fetchAllUserTasks(1);
-        when(userService.fetchAllUserTasks(1)).thenReturn(AlemTasks);
-        assertEquals(AlemTasks, userService.fetchAllUserTasks(1));
-    }
-
 
 }

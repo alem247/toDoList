@@ -36,34 +36,35 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public String removeUser(long id) {
-        this.userRepository.delete(this.userRepository.findById(id));
+        this.userRepository.delete(this.userRepository.findById(id).get());
         return "User successfully removed.";
     }
 
     @Override
     public String updateUsername(long id, String newUserName) {
-        this.userRepository.findById(id).setUsername(newUserName);
-        return "User: " + userRepository.findById(id).getName() + "has a new username: " + newUserName;
+        this.userRepository.findById(id).get().setUsername(newUserName);
+        return "User: " + userRepository.findById(id).get().getName() + "has a new username: " + newUserName;
     }
 
     @Override
     public String updatePhonenum(long id, String newPhoneNumber) {
-        this.userRepository.findById(id).setPhonenum(newPhoneNumber);
-        return "User: " + userRepository.findById(id).getName() + "has a new phone number: " + newPhoneNumber;
+        this.userRepository.findById(id).get().setPhonenum(newPhoneNumber);
+        return "User: " + userRepository.findById(id).get().getName() + "has a new phone number: " + newPhoneNumber;
     }
 
     @Override
     public String updateAddress(long id, String newAddress) {
-         this.userRepository.findById(id).setAddress(newAddress);
-        return "User: " + userRepository.findById(id).getName() + "has a new address: " + newAddress;
+         this.userRepository.findById(id).get().setAddress(newAddress);
+        return "User: " + userRepository.findById(id).get().getName() + "has a new address: " + newAddress;
     }
 
     @Override
     public List<Optional<Task>> fetchAllUserTasks(long id) {
-         User temp = userRepository.findById(id);
+         User temp = userRepository.findById(id).get();
          List<Optional<Task>> userTasks = new ArrayList<>();
-         for (int i = 0; i < temp.getUserTasks().size(); i++){
-             long taskId = temp.getUserTasks().get(i);
+         int k = temp.getUserTasks().length;
+         for (int i = 0; i < k; i++){
+             long taskId = temp.getUserTasks()[i];
              userTasks.add(toDoListRepository.findById((taskId)));
          }
          return userTasks;

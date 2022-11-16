@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -25,7 +24,7 @@ public class User {
     @Column(name = "phonenum", length = 32, nullable = false)
     private String phonenum;
     @Column(name = "userTasks")
-    private ArrayList<Integer> userTasks;
+    private int[] userTasks;
 
     public User() {
     }
