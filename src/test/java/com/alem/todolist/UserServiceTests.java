@@ -1,5 +1,6 @@
 package com.alem.todolist;
 import com.alem.todolist.model.User;
+import com.alem.todolist.model.UserDto;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.repository.UserRepository;
 import com.alem.todolist.service.UserService;
@@ -47,24 +48,26 @@ public class UserServiceTests {
 
     @Test
     void shouldFetchAllUsers(){
-        List<User> users = userRepository.findAll();
-        when(userService.fetchAllUsers()).thenReturn(users);
-        assertEquals(users.size(), userService.fetchAllUsers().size());
+        List<UserDto> userDtos = myMethods.convertListToUserDtos(userRepository.findAll());
+        when(userService.fetchAllUsers()).thenReturn(userDtos);
+        assertEquals(userDtos, userService.fetchAllUsers());
     }
 
     @Test
     void shouldAddUser(){
         User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
                 "061932443", new int[]{5, 6, 7});
-        when(userService.addUser(Isak)).thenReturn(Isak);
-        assertEquals(Isak, userService.addUser(Isak));
+        UserDto testIsak = new UserDto(Isak);
+        when(userService.addUser(Isak)).thenReturn(testIsak);
+        assertEquals(testIsak, userService.addUser(Isak));
     }
 
     @Test
     void shouldRemoveUser(){
         User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
                 "061932443", new int[]{5, 6, 7});
-        when(userService.fetchUser(any(Long.class))).thenReturn(Isak);
+        UserDto testIsak = new UserDto(Isak);
+        when(userService.fetchUser(any(Long.class))).thenReturn(testIsak);
         userService.removeUser(3L);
         String expectedReturnStatement = "User successfully removed.";
         assertEquals(expectedReturnStatement , userService.removeUser(3L));
@@ -74,30 +77,33 @@ public class UserServiceTests {
     void shouldUpdateUsername(){
         User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
                 "061932443", new int[]{5, 6, 7});
+        UserDto testIsak = new UserDto(Isak);
         String newUsername = "test55";
-        when(userService.fetchUser(any(Long.class))).thenReturn(Isak);
+        when(userService.fetchUser(any(Long.class))).thenReturn(testIsak);
         userService.updateUsername(3, newUsername);
-        assertEquals(Isak, userService.updateUsername(3, newUsername));
+        assertEquals(testIsak, userService.updateUsername(3, newUsername));
     }
 
     @Test
-    void shouldUpdatePhonenum(){
+    void shouldUpdatePhoneNumber(){
         User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
                 "061932443", new int[]{5, 6, 7});
-        when(userService.fetchUser(any(Long.class))).thenReturn(Isak);
+        UserDto testIsak = new UserDto(Isak);
+        when(userService.fetchUser(any(Long.class))).thenReturn(testIsak);
         String newPhoneNumber = "062049980";
         userService.updatePhoneNumber(3, "062049980");
-        assertEquals(Isak, userService.updatePhoneNumber(3, newPhoneNumber));
+        assertEquals(testIsak, userService.updatePhoneNumber(3, newPhoneNumber));
     }
 
     @Test
     void shouldUpdateAddress(){
         User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
                 "061932443", new int[]{5, 6, 7});
-        when(userService.fetchUser(any(Long.class))).thenReturn(Isak);
+        UserDto testIsak = new UserDto(Isak);
+        when(userService.fetchUser(any(Long.class))).thenReturn(testIsak);
         String newAddress = "Gerbiceva 53";
         userService.updateAddress(3, newAddress);
-        assertEquals(Isak, userService.updateAddress(3, newAddress));
+        assertEquals(testIsak, userService.updateAddress(3, newAddress));
     }
 
 }

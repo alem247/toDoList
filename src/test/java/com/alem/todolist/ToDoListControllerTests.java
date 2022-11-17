@@ -1,12 +1,11 @@
 package com.alem.todolist;
-
-
 import com.alem.todolist.controller.ToDoListController;
 import com.alem.todolist.exceptions.InvalidGroupException;
 import com.alem.todolist.model.GroupType;
 import com.alem.todolist.model.Task;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.service.ToDoListService;
+import com.alem.todolist.service.UserService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -15,19 +14,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -36,12 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.hasValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -49,16 +41,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class ToDoListControllerTests {
 
-    @MockBean
+    @Autowired
     private ObjectMapper mapper;
-    @MockBean
-    private ToDoListRepository toDoListRepository;
-
     @MockBean
     private ToDoListService toDoListService;
 
+    @MockBean
+    private UserService userService;
+
     @InjectMocks
-    private ToDoListController toDoListController = new ToDoListController(toDoListRepository, toDoListService);
+    private ToDoListController toDoListController = new ToDoListController(toDoListService, userService);
 
     @Autowired
     private MockMvc mockmvc;

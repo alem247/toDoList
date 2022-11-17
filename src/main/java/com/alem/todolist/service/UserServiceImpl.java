@@ -1,17 +1,20 @@
 package com.alem.todolist.service;
 
 import com.alem.todolist.model.Task;
+import com.alem.todolist.model.TaskDto;
 import com.alem.todolist.model.User;
+import com.alem.todolist.model.UserDto;
+import com.alem.todolist.myMethods;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.repository.UserRepository;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.events.Event;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.LongStream;
 
 
 @Service
@@ -28,18 +31,18 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<User> fetchAllUsers() {
-        return this.userRepository.findAll();
+    public List<UserDto> fetchAllUsers() {
+        return myMethods.convertListToUserDtos(this.userRepository.findAll());
     }
 
     @Override
-    public User fetchUser(long id) {
-        return this.userRepository.findById(id);
+    public UserDto fetchUser(long id) {
+        return new UserDto(this.userRepository.findById(id));
     }
 
     @Override
-    public User addUser(User x) {
-        return this.userRepository.save(x);
+    public UserDto addUser(User x) {
+        return new UserDto(this.userRepository.save(x));
     }
 
     @Override
@@ -49,32 +52,33 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User updateUsername(long id, String newUserName) {
-        this.userRepository.findById(id).setUsername(newUserName);
-        return this.userRepository.findById(id);
+    public UserDto updateUsername(long id, String newUserName) {
+        User user = this.userRepository.findById(id);
+        user.setUsername(newUserName);
+        return new UserDto(user);
     }
 
     @Override
-    public User updatePhoneNumber(long id, String newPhoneNumber) {
-        this.userRepository.findById(id).setPhone_num(newPhoneNumber);
-        return this.userRepository.findById(id);
+    public UserDto updatePhoneNumber(long id, String newPhoneNumber) {
+        User user = this.userRepository.findById(id);
+        user.setPhone_num(newPhoneNumber);
+        return new UserDto(user);
     }
 
     @Override
-    public User updateAddress(long id, String newAddress) {
-         this.userRepository.findById(id).setAddress(newAddress);
-        return this.userRepository.findById(id);
+    public UserDto updateAddress(long id, String newAddress) {
+        User user = this.userRepository.findById(id);
+        user.setAddress(newAddress);
+        return new UserDto(user);
     }
 
     @Override
-    public List<Optional<Task>> fetchAllUserTasks(long id) {
-         User temp = userRepository.findById(id);
-         List<Optional<Task>> userTasks = new ArrayList<>();
-         int k = temp.getUser_Tasks().length;
-         for (int i = 0; i < k; i++){
-             long taskId = temp.getUser_Tasks()[i];
-             userTasks.add(toDoListRepository.findById((taskId)));
-         }
-         return userTasks;
+    public List<TaskDto> fetchAllUserTasks(long id) {
+         User user = userRepository.findById(id);
+         List<TaskDto> tasks = new ArrayList<>();
+         int[] userTasks = user.getUser_Tasks();
+         LongStream taskIdStream = Arrays.stream(userTasks).asLongStream();
+         taskIdStream.forEach(taskId -> tasks.add(new TaskDto(this.toDoListRepository.findById(taskId).get())));
+         return tasks;
     }
 }
