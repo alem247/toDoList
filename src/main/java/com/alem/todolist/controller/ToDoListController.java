@@ -30,20 +30,19 @@ public class ToDoListController {
         this.userService = userService;
     }
 
-
     @GetMapping
     public List<TaskDto> getTasks() {
-        return myMethods.convertListToTaskDtos(this.toDoListService.fetchAllTasks());
+        return this.toDoListService.fetchAllTasks();
     }
 
     @GetMapping(value = "/{id}")
     public TaskDto printTaskDetails(@PathVariable Long id) {
-        return new TaskDto(this.toDoListService.getTask(id));
+        return this.toDoListService.getTask(id);
     }
 
     @PostMapping(produces = "application/json")
-    public TaskDto addTask(Task task) throws InvalidGroupException {
-        return new TaskDto(toDoListService.addNewTask(task));
+    public TaskDto addTask(Task task){
+        return toDoListService.addNewTask(task);
     }
 
     @GetMapping(value = "/forDay/{date}")
@@ -51,13 +50,13 @@ public class ToDoListController {
         String[] date_data = date.split("_");
         String date_joined = String.join("-", date_data);
         LocalDate ld = LocalDate.parse(date_joined);
-        return myMethods.convertListToTaskDtos(toDoListService.fetchTasksByDate
-                (ld.atStartOfDay(ZoneId.of("Europe/Ljubljana")).toInstant()));
+        return toDoListService.fetchTasksByDate
+                (ld.atStartOfDay(ZoneId.of("Europe/Ljubljana")).toInstant());
     }
 
     @GetMapping(value ="/forGroup/{group}")
     public List<TaskDto> printTasksForGivenGroup(@PathVariable String group){
-       return myMethods.convertListToTaskDtos(toDoListService.fetchTasksByGroup(group));
+       return toDoListService.fetchTasksByGroup(group);
     }
 
     @GetMapping(value = "/forUser/{userid}")
@@ -67,6 +66,6 @@ public class ToDoListController {
 
     @DeleteMapping("/{id}")
     public void removeTask(@PathVariable("id") Long id) {
-        toDoListService.removeTask(toDoListService.getTask(id));
+        toDoListService.removeTask(toDoListService.getTask(id).getTask());
     }
 }

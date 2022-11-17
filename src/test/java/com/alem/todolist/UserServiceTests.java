@@ -77,11 +77,10 @@ public class UserServiceTests {
     void shouldUpdateUsername(){
         User Isak = new User(3, "Isak Tarik", "Delic", "tarikaznjensi", "kod fileka",
                 "061932443", new int[]{5, 6, 7});
-        UserDto testIsak = new UserDto(Isak);
         String newUsername = "test55";
-        when(userService.fetchUser(any(Long.class))).thenReturn(testIsak);
+        when(userService.fetchUser(any(Long.class))).thenReturn(new UserDto(Isak));
         userService.updateUsername(3, newUsername);
-        assertEquals(testIsak, userService.updateUsername(3, newUsername));
+        assertEquals(new UserDto(Isak), userService.updateUsername(3, newUsername));
     }
 
     @Test

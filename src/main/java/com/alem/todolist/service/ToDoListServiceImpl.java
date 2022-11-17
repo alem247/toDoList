@@ -1,6 +1,8 @@
 package com.alem.todolist.service;
 
 import com.alem.todolist.model.Task;
+import com.alem.todolist.model.TaskDto;
+import com.alem.todolist.myMethods;
 import com.alem.todolist.repository.ToDoListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,29 +22,29 @@ public class ToDoListServiceImpl implements ToDoListService{
     }
 
     @Override
-    public List<Task> fetchAllTasks() {
-        return this.toDoListRepository.findAll();
+    public List<TaskDto> fetchAllTasks() {
+        return myMethods.convertListToTaskDtos(this.toDoListRepository.findAll());
     }
 
     @Override
-    public Task addNewTask(Task task){
+    public TaskDto addNewTask(Task task){
         this.toDoListRepository.save(task);
-        return task;
+        return new TaskDto(task);
     }
 
     @Override
-    public Task getTask(long id) {
-        return this.toDoListRepository.findById(id).get();
+    public TaskDto getTask(long id) {
+        return new TaskDto(this.toDoListRepository.findById(id).get());
     }
 
     @Override
-    public List<Task> fetchTasksByGroup(String group) {
-        return this.toDoListRepository.getTasksForGivenGroup(group);
+    public List<TaskDto> fetchTasksByGroup(String group) {
+        return myMethods.convertListToTaskDtos(this.toDoListRepository.getTasksForGivenGroup(group));
     }
 
     @Override
-    public List<Task> fetchTasksByDate(Instant date) {
-        return this.toDoListRepository.getTasksForGivenDate(date);
+    public List<TaskDto> fetchTasksByDate(Instant date) {
+        return myMethods.convertListToTaskDtos(this.toDoListRepository.getTasksForGivenDate(date));
     }
 
 

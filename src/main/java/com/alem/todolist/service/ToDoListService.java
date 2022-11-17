@@ -1,6 +1,7 @@
 package com.alem.todolist.service;
 
 import com.alem.todolist.model.Task;
+import com.alem.todolist.model.TaskDto;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -9,15 +10,15 @@ import java.util.List;
 @Service
 public interface ToDoListService {
 
-     List<Task> fetchAllTasks();
+     List<TaskDto> fetchAllTasks();
 
-     Task addNewTask(Task task);
+     TaskDto addNewTask(Task task);
 
-     Task getTask(long id);
+     TaskDto getTask(long id);
 
-     List<Task> fetchTasksByGroup(String group);
+     List<TaskDto> fetchTasksByGroup(String group);
 
-     List<Task> fetchTasksByDate(Instant date);
+     List<TaskDto> fetchTasksByDate(Instant date);
 
      void removeTask(Task task);
 }
