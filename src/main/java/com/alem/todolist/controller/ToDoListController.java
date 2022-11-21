@@ -1,45 +1,71 @@
 package com.alem.todolist.controller;
 
 
+import com.alem.todolist.exceptions.InvalidGroupException;
+import com.alem.todolist.model.TaskDto;
+import com.alem.todolist.myMethods;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.model.Task;
+import com.alem.todolist.service.ToDoListService;
+import com.alem.todolist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
-@EnableJpaRepositories("com.alem.todolist.repository")
+import java.util.stream.Collectors;
+
+
 @RestController
 @RequestMapping("/tasks")
 public class ToDoListController {
+    private ToDoListService toDoListService;
 
-    private ToDoListRepository toDoListRepository;
+    private UserService userService;
 
     @Autowired
-    public ToDoListController(ToDoListRepository toDoListRepository){
-        this.toDoListRepository = toDoListRepository;
+    public ToDoListController(ToDoListService toDoListService, UserService userService) {
+        this.toDoListService = toDoListService;
+        this.userService = userService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public List<Task> getTasks(){
-        return this.toDoListRepository.findAll();
+    @GetMapping
+    public List<TaskDto> getTasks() {
+        return this.toDoListService.fetchAllTasks();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String printTaskDetails(@PathVariable Long id){
-        return this.toDoListRepository.findById(id).get().toString();
+    @GetMapping(value = "/{id}")
+    public TaskDto printTaskDetails(@PathVariable Long id) {
+        return this.toDoListService.getTask(id);
     }
 
-    // task: id, desc, date, location, group
-    @PostMapping
-    public void addTask(Task task){
-        toDoListRepository.save(task);
+    @PostMapping(produces = "application/json")
+    public TaskDto addTask(Task task){
+        return toDoListService.addNewTask(task);
+    }
+
+    @GetMapping(value = "/forDay/{date}")
+    public List<TaskDto> printTasksForGivenDate(@PathVariable String date){
+        String[] date_data = date.split("_");
+        String date_joined = String.join("-", date_data);
+        LocalDate ld = LocalDate.parse(date_joined);
+        return toDoListService.fetchTasksByDate
+                (ld.atStartOfDay(ZoneId.of("Europe/Ljubljana")).toInstant());
+    }
+
+    @GetMapping(value ="/forGroup/{group}")
+    public List<TaskDto> printTasksForGivenGroup(@PathVariable String group){
+       return toDoListService.fetchTasksByGroup(group);
+    }
+
+    @GetMapping(value = "/forUser/{id}")
+    public List<TaskDto> printTasksForGivenUser(@PathVariable long id){
+        return userService.fetchAllUserTasks(id);
     }
 
     @DeleteMapping("/{id}")
-    public void removeTask(@PathVariable("id") Long id){
-        toDoListRepository.deleteById(id);
+    public void removeTask(@PathVariable("id") Long id) {
+        toDoListService.removeTask(toDoListService.getTask(id).getTask());
     }
-
 }

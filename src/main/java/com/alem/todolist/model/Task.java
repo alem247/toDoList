@@ -2,10 +2,9 @@ package com.alem.todolist.model;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.Instant;
+import java.time.LocalDate;
 
 @Getter @Setter
 @ToString @NoArgsConstructor
@@ -13,19 +12,23 @@ import javax.persistence.Table;
 @Table(name = "tasks", schema = "public")
 public class Task {
     @Id
-    @Column(name = "id")
+    @Column(name = "id", length = 32, nullable = false)
     private Long id;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 32, nullable = false)
     private String desc; // task description
 
-    @Column(name = "date")
-    private String date; // task due date
+    @Column(name = "date", nullable = false)
+    private Instant date; // task due date
 
-    @Column(name = "location")
+    @Column(name = "location", length = 32, nullable = false)
     private String location; // task location
 
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "group")
-    private String group; // work, exercise, etc.
+    private GroupType group; // work, exercise, etc.
+
+
 
 }
