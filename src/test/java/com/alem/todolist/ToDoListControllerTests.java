@@ -3,6 +3,7 @@ import com.alem.todolist.controller.ToDoListController;
 import com.alem.todolist.exceptions.InvalidGroupException;
 import com.alem.todolist.model.GroupType;
 import com.alem.todolist.model.Task;
+import com.alem.todolist.model.TaskDto;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.service.ToDoListService;
 import com.alem.todolist.service.UserService;
@@ -79,7 +80,8 @@ public class ToDoListControllerTests {
         test3.setLocation("home");
         test3.setGroup(GroupType.valueOf("STUDY"));
         List<Task> tasks = Arrays.asList(test1, test2, test3);
-        when(toDoListService.fetchAllTasks()).thenReturn(tasks);
+        List<TaskDto> taskdtos = myMethods.convertListToTaskDtos(tasks);
+        when(toDoListService.fetchAllTasks()).thenReturn(taskdtos);
         toDoListController.addTask(test1);
         toDoListController.addTask(test2);
         toDoListController.addTask(test3);
@@ -114,7 +116,7 @@ public class ToDoListControllerTests {
         task.setDate(ld.atStartOfDay(ZoneId.of("Europe/Ljubljana")).toInstant());
         task.setGroup(GroupType.valueOf("WORK"));
         task.setLocation("home");
-        when(toDoListService.addNewTask(any(Task.class))).thenReturn(task);
+        when(toDoListService.addNewTask(any(Task.class))).thenReturn(new TaskDto(task));
         this.mockmvc.perform(
                         MockMvcRequestBuilders.post("/tasks").content(mapper.writeValueAsString(task)).
                                 contentType(MediaType.APPLICATION_JSON_VALUE).accept("application/json"))
@@ -143,7 +145,7 @@ public class ToDoListControllerTests {
         testgroup1.setLocation("home");
         testgroup1.setGroup(GroupType.valueOf("PERSONAL"));
         List<Task> tasksgrp = List.of(testgroup1);
-        when(toDoListService.fetchTasksByGroup(anyString())).thenReturn(tasksgrp);
+        when(toDoListService.fetchTasksByGroup(anyString())).thenReturn(myMethods.convertListToTaskDtos(tasksgrp));
         this.mockmvc.perform(MockMvcRequestBuilders.get("/tasks/forGroup/PERSONAL").contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -161,7 +163,7 @@ public class ToDoListControllerTests {
         testdate.setLocation("home");
         testdate.setGroup(GroupType.valueOf("PERSONAL"));
         List<Task> testdates = List.of(testdate);
-        when(toDoListService.fetchTasksByDate(any(Instant.class))).thenReturn(testdates);
+        when(toDoListService.fetchTasksByDate(any(Instant.class))).thenReturn(myMethods.convertListToTaskDtos(testdates));
         this.mockmvc.perform(MockMvcRequestBuilders.get("/tasks/forDay/2022_10_26").contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

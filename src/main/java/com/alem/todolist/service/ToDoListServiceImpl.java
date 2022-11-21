@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,7 +47,6 @@ public class ToDoListServiceImpl implements ToDoListService{
     public List<TaskDto> fetchTasksByDate(Instant date) {
         return myMethods.convertListToTaskDtos(this.toDoListRepository.getTasksForGivenDate(date));
     }
-
 
     @Override
     public void removeTask(Task task) {

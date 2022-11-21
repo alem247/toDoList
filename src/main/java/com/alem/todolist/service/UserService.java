@@ -14,7 +14,6 @@ import java.util.Optional;
 public interface UserService {
 
     List<UserDto> fetchAllUsers();
-
     UserDto fetchUser(long id);
     UserDto addUser(User x);
     String removeUser(long id);

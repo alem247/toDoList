@@ -15,7 +15,7 @@ public class myMethods {
                 .collect(Collectors.toList());
     }
 
-    public static List<UserDto> convertListToUserDtos(List<User> users){
+    public static List<UserDto> convertListToUserDtos(List<User> users) {
         return users.stream()
                 .map(UserDto::new)
                 .collect(Collectors.toList());

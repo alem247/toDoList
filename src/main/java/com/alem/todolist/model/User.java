@@ -21,9 +21,9 @@ public class User {
     private String username;
     @Column(name = "address", nullable = false)
     private String address;
-    @Column(name = "phonenum", length = 32, nullable = false)
+    @Column(name = "phone_number", length = 32, nullable = false)
     private String phone_num;
-    @Column(name = "userTasks")
+    @Column(name = "user_Tasks")
     private int[] user_Tasks;
 
     public User() {

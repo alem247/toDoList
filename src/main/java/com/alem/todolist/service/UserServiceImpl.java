@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 
 @Service
@@ -74,11 +76,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public List<TaskDto> fetchAllUserTasks(long id) {
-         User user = userRepository.findById(id);
-         List<TaskDto> tasks = new ArrayList<>();
-         int[] userTasks = user.getUser_Tasks();
-         LongStream taskIdStream = Arrays.stream(userTasks).asLongStream();
-         taskIdStream.forEach(taskId -> tasks.add(new TaskDto(this.toDoListRepository.findById(taskId).get())));
-         return tasks;
+        IntStream taskids = Arrays.stream(this.userRepository.findById(id).getUser_Tasks());
+        Stream<Task> user_tasks = taskids.mapToObj(taskid -> this.toDoListRepository.findById((long) taskid).get());
+        List<Task> result = user_tasks.collect(Collectors.toList());
+        return myMethods.convertListToTaskDtos(result);
     }
+
+
 }

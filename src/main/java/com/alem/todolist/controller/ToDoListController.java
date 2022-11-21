@@ -59,9 +59,9 @@ public class ToDoListController {
        return toDoListService.fetchTasksByGroup(group);
     }
 
-    @GetMapping(value = "/forUser/{userid}")
-    public List<TaskDto> printTasksForGivenUser(@PathVariable long userid){
-        return userService.fetchAllUserTasks(userid);
+    @GetMapping(value = "/forUser/{id}")
+    public List<TaskDto> printTasksForGivenUser(@PathVariable long id){
+        return userService.fetchAllUserTasks(id);
     }
 
     @DeleteMapping("/{id}")
