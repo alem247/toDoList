@@ -1,4 +1,4 @@
-package com.alem.todolist.controller.errorHandling;
+package com.alem.todolist.errorHandling;
 
 
 import com.alem.todolist.exceptions.InvalidGroupException;

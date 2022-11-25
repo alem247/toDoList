@@ -8,11 +8,15 @@ import com.alem.todolist.myMethods;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -24,12 +28,9 @@ public class UserServiceImpl implements UserService{
 
     private UserRepository userRepository;
 
-    private ToDoListRepository toDoListRepository;
-
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ToDoListRepository toDoListRepository){
+    public UserServiceImpl(UserRepository userRepository){
         this.userRepository = userRepository;
-        this.toDoListRepository = toDoListRepository;
     }
 
     @Override
@@ -43,8 +44,25 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDto addUser(User x) {
-        return new UserDto(this.userRepository.save(x));
+    public UserDto loadByUsername(String username) { return new UserDto(this.userRepository.findByUsername(username));}
+
+    @Override
+    public UserDto registerUser(long id, String name, String surname, String email, String password,
+                                String address, String phone_number) {
+        User user = new User();
+        user.setId(id);
+        user.setName(name);
+        user.setSurname(surname);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setAddress(address);
+        user.setPhone_num(phone_number);
+        return new UserDto(user);
+    }
+
+    @Override
+    public boolean authentication(String username, String password){
+        return this.userRepository.findByUsername(username).getPassword().equals(password);
     }
 
     @Override
@@ -73,14 +91,5 @@ public class UserServiceImpl implements UserService{
         user.setAddress(newAddress);
         return new UserDto(user);
     }
-
-    @Override
-    public List<TaskDto> fetchAllUserTasks(long id) {
-        IntStream taskids = Arrays.stream(this.userRepository.findById(id).getUser_Tasks());
-        Stream<Task> user_tasks = taskids.mapToObj(taskid -> this.toDoListRepository.findById((long) taskid).get());
-        List<Task> result = user_tasks.collect(Collectors.toList());
-        return myMethods.convertListToTaskDtos(result);
-    }
-
 
 }

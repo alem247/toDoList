@@ -53,4 +53,9 @@ public class ToDoListServiceImpl implements ToDoListService{
         this.toDoListRepository.delete(task);
     }
 
+    @Override
+    public List<TaskDto> fetchTasksByUser(long id) {
+        return myMethods.convertListToTaskDtos(this.toDoListRepository.findTasksForUser(id));
+    }
+
 }

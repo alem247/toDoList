@@ -3,6 +3,7 @@ import com.alem.todolist.model.User;
 import com.alem.todolist.model.UserDto;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.repository.UserRepository;
+import com.alem.todolist.service.ToDoListService;
 import com.alem.todolist.service.UserService;
 import com.alem.todolist.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,7 @@ public class UserServiceTests {
     private ToDoListRepository toDoListRepository;
 
     @InjectMocks
-    private UserService userService = new UserServiceImpl(userRepository, toDoListRepository);
+    private UserService userService = new UserServiceImpl(userRepository);
 
     @BeforeEach
     void setup(){

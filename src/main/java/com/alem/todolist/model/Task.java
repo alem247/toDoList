@@ -1,10 +1,12 @@
 package com.alem.todolist.model;
 
 import lombok.*;
+import org.hibernate.annotations.ValueGenerationType;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Getter @Setter
 @ToString @NoArgsConstructor
@@ -24,11 +26,11 @@ public class Task {
     @Column(name = "location", length = 32, nullable = false)
     private String location; // task location
 
-
     @Enumerated(EnumType.STRING)
     @Column(name = "group")
-    private GroupType group; // work, exercise, etc.
+    private GroupType group; // work, exercise, etc
 
-
+    @ManyToMany(mappedBy = "tasks")
+    private Collection<User> users = new ArrayList<>();
 
 }
