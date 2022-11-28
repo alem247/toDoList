@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,10 +28,13 @@ import java.util.stream.Stream;
 public class UserServiceImpl implements UserService{
 
     private UserRepository userRepository;
-
+    private ToDoListRepository toDoListRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    public UserServiceImpl(UserRepository userRepository){
+    public UserServiceImpl(UserRepository userRepository, ToDoListRepository toDoListRepository, BCryptPasswordEncoder bCryptPasswordEncoder){
         this.userRepository = userRepository;
+        this.toDoListRepository = toDoListRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -44,25 +48,25 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDto loadByUsername(String username) { return new UserDto(this.userRepository.findByUsername(username));}
-
-    @Override
-    public UserDto registerUser(long id, String name, String surname, String email, String password,
-                                String address, String phone_number) {
-        User user = new User();
-        user.setId(id);
-        user.setName(name);
-        user.setSurname(surname);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setAddress(address);
-        user.setPhone_num(phone_number);
-        return new UserDto(user);
+    public String signUpUser(User user) {
+        boolean userExists = userRepository.findByEmail(user.getEmail()) == user;
+        if (userExists){
+            throw new IllegalStateException("Email already taken");
+        }
+        String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        // todo : send confirmation token
+        userRepository.save(user);
+        return "it works";
     }
 
     @Override
-    public boolean authentication(String username, String password){
-        return this.userRepository.findByUsername(username).getPassword().equals(password);
+    public List<TaskDto> fetchUserTasks(String username) {
+        return myMethods.convertListToTaskDtos
+                (this.userRepository.getTasksForUser(this.userRepository.findByUsername(username).getId())
+                        .stream()
+                        .map(id -> this.toDoListRepository.findById(Long.valueOf(id)).get())
+                        .collect(Collectors.toList()));
     }
 
     @Override
@@ -92,4 +96,8 @@ public class UserServiceImpl implements UserService{
         return new UserDto(user);
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return this.userRepository.findByUsername(username);
+    }
 }

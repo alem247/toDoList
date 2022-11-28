@@ -22,5 +22,4 @@ public interface ToDoListService {
 
      void removeTask(Task task);
 
-     List<TaskDto> fetchTasksByUser(long id);
 }

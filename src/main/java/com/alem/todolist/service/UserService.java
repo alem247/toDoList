@@ -12,18 +12,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public interface UserService{
+public interface UserService extends UserDetailsService {
 
     List<UserDto> fetchAllUsers();
     UserDto fetchUser(long id);
-    UserDto loadByUsername(String username);
-    UserDto registerUser(long id, String name, String surname, String email, String password,
-                         String address, String phone_number);
     String removeUser(long id);
     UserDto updateUsername(long id, String newUserName);
     UserDto updatePhoneNumber(long id, String newPhoneNum);
     UserDto updateAddress(long id, String newAddress);
-
-    boolean authentication(String username, String password);
-
+    List<TaskDto> fetchUserTasks(String username);
+    String signUpUser(User user);
 }

@@ -1,5 +1,8 @@
 package com.alem.todolist.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.ValueGenerationType;
 
@@ -29,8 +32,8 @@ public class Task {
     @Enumerated(EnumType.STRING)
     @Column(name = "group")
     private GroupType group; // work, exercise, etc
-
-    @ManyToMany(mappedBy = "tasks")
+    @ManyToMany(mappedBy = "tasks", targetEntity = User.class)
+    @JsonIgnore
     private Collection<User> users = new ArrayList<>();
 
 }

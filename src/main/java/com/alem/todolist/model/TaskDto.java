@@ -11,7 +11,6 @@ import java.time.Instant;
 @AllArgsConstructor
 public class TaskDto {
 
-
     private Task task;
 
 }

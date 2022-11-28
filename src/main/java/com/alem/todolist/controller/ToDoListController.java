@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/tasks")
 public class ToDoListController {
     private ToDoListService toDoListService;
 
@@ -35,17 +35,17 @@ public class ToDoListController {
         return this.toDoListService.fetchAllTasks();
     }
 
-    @GetMapping(value = "/tasks/{id}")
+    @GetMapping(value = "/{id}")
     public TaskDto printTaskDetails(@PathVariable Long id) {
         return this.toDoListService.getTask(id);
     }
 
-    @PostMapping(produces = "application/json")
+    @PostMapping(value = "/addTask", produces = "application/json")
     public TaskDto addTask(Task task){
         return toDoListService.addNewTask(task);
     }
 
-    @GetMapping(value = "/tasks/forDay/{date}")
+    @GetMapping(value = "/forDay/{date}")
     public List<TaskDto> printTasksForGivenDate(@PathVariable String date){
         String[] date_data = date.split("_");
         String date_joined = String.join("-", date_data);
@@ -54,17 +54,17 @@ public class ToDoListController {
                 (ld.atStartOfDay(ZoneId.of("Europe/Ljubljana")).toInstant());
     }
 
-    @GetMapping(value ="/tasks/forGroup/{group}")
+    @GetMapping(value ="/forGroup/{group}")
     public List<TaskDto> printTasksForGivenGroup(@PathVariable String group){
        return toDoListService.fetchTasksByGroup(group);
     }
 
-    @GetMapping(value = "/tasks/forUser/{username}")
+    @GetMapping(value = "/forUser/{username}")
     public List<TaskDto> printTasksForGivenUser(@PathVariable String username){
-        return toDoListService.fetchTasksByUser(userService.loadByUsername(username).getUser().getId());
+        return userService.fetchUserTasks(username);
     }
 
-    @DeleteMapping("/tasks/{id}")
+    @DeleteMapping("/{id}")
     public void removeTask(@PathVariable("id") Long id) {
         toDoListService.removeTask(toDoListService.getTask(id).getTask());
     }
