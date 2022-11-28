@@ -1,1 +1,0 @@
-DELETE from tasks WHERE id>5

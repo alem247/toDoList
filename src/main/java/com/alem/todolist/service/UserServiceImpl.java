@@ -1,9 +1,6 @@
 package com.alem.todolist.service;
 
-import com.alem.todolist.model.Task;
-import com.alem.todolist.model.TaskDto;
-import com.alem.todolist.model.User;
-import com.alem.todolist.model.UserDto;
+import com.alem.todolist.model.*;
 import com.alem.todolist.myMethods;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.repository.UserRepository;
@@ -14,10 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -30,11 +25,15 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
     private ToDoListRepository toDoListRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ToDoListRepository toDoListRepository, BCryptPasswordEncoder bCryptPasswordEncoder){
+    public UserServiceImpl(
+            UserRepository userRepository, ToDoListRepository toDoListRepository,
+            BCryptPasswordEncoder bCryptPasswordEncoder, ConfirmationTokenService confirmationTokenService){
         this.userRepository = userRepository;
         this.toDoListRepository = toDoListRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.confirmationTokenService = confirmationTokenService;
     }
 
     @Override
@@ -55,9 +54,17 @@ public class UserServiceImpl implements UserService{
         }
         String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-        // todo : send confirmation token
+
+        String token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(10),
+                user
+        );
+        confirmationTokenService.saveConfirmationToken(confirmationToken);
         userRepository.save(user);
-        return "it works";
+        return token;
     }
 
     @Override
