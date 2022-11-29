@@ -15,8 +15,8 @@ public class ConfirmationToken {
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="id_token_seq")
     private Long id;
     private String token;
-
-    @ManyToOne(targetEntity = User.class) // 1 user can have many tokens
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public ConfirmationToken

@@ -72,22 +72,22 @@ public class User implements UserDetails {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userRole.name());
         return Collections.singletonList(authority);
     }
-
+    // TODO:
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
-
+    // TODO:
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
-
+    // TODO:
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
-
+    // TODO:
     @Override
     public boolean isEnabled() {
         return this.enabled;
