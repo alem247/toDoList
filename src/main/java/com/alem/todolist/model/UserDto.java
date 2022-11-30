@@ -10,4 +10,6 @@ public class UserDto  {
 
     private User user;
 
+    public UserDto(){}
+
 }

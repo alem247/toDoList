@@ -10,6 +10,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.util.*;
 
 @Data
@@ -38,7 +40,8 @@ public class User implements UserDetails {
         this.phone_num = phone_num;
         this.userRole = role;
     }
-
+    @Email
+    @NotEmpty
     @Column(name = "email", length = 32, nullable = false)
     private String email;
     @Column(name = "password", length = 32, nullable = false)
@@ -72,22 +75,20 @@ public class User implements UserDetails {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userRole.name());
         return Collections.singletonList(authority);
     }
-    // TODO:
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
-    // TODO:
+
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-    // TODO:
+    public boolean isAccountNonLocked() {return !this.locked;}
+
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
-    // TODO:
+
     @Override
     public boolean isEnabled() {
         return this.enabled;

@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 public class EmailValidator implements Predicate<String>{
     @Override
     public boolean test(String s) {
-        // todo: regex to validate email
+       // using @Email for now
         return true;
     }
 }

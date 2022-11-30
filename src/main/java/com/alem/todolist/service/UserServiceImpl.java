@@ -6,7 +6,6 @@ import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,9 +13,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
 
 
 @Service
@@ -101,6 +97,11 @@ public class UserServiceImpl implements UserService{
         User user = this.userRepository.findById(id);
         user.setAddress(newAddress);
         return new UserDto(user);
+    }
+
+    @Override
+    public void enableUser(String email) {
+        this.userRepository.enableUser(email);
     }
 
     @Override

@@ -29,6 +29,7 @@ public class ConfirmationToken {
 
     private LocalDateTime creationTime;
     private LocalDateTime expirationTime;
+    private LocalDateTime confirmationTime;
 
     public ConfirmationToken() {
 

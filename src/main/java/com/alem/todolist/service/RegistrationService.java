@@ -6,4 +6,5 @@ import org.springframework.stereotype.Service;
 public interface RegistrationService {
 
     String register(RegistrationRequest request);
+    String confirmToken(String token);
 }

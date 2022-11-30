@@ -1,7 +1,6 @@
 package com.alem.todolist.service;
 
 
-import com.alem.todolist.model.Task;
 import com.alem.todolist.model.TaskDto;
 import com.alem.todolist.model.User;
 import com.alem.todolist.model.UserDto;
@@ -9,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface UserService extends UserDetailsService {
@@ -22,4 +20,6 @@ public interface UserService extends UserDetailsService {
     UserDto updateAddress(long id, String newAddress);
     List<TaskDto> fetchUserTasks(String username);
     String signUpUser(User user);
+
+    void enableUser(String email);
 }
