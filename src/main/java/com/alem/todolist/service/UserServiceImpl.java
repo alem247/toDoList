@@ -1,35 +1,35 @@
 package com.alem.todolist.service;
 
-import com.alem.todolist.model.Task;
-import com.alem.todolist.model.TaskDto;
-import com.alem.todolist.model.User;
-import com.alem.todolist.model.UserDto;
+import com.alem.todolist.model.*;
 import com.alem.todolist.myMethods;
 import com.alem.todolist.repository.ToDoListRepository;
 import com.alem.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
 
 
 @Service
 public class UserServiceImpl implements UserService{
 
     private UserRepository userRepository;
-
     private ToDoListRepository toDoListRepository;
-
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ToDoListRepository toDoListRepository){
+    public UserServiceImpl(
+            UserRepository userRepository, ToDoListRepository toDoListRepository,
+            BCryptPasswordEncoder bCryptPasswordEncoder, ConfirmationTokenService confirmationTokenService){
         this.userRepository = userRepository;
         this.toDoListRepository = toDoListRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.confirmationTokenService = confirmationTokenService;
     }
 
     @Override
@@ -43,8 +43,33 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDto addUser(User x) {
-        return new UserDto(this.userRepository.save(x));
+    public String signUpUser(User user) {
+        boolean userExists = userRepository.findByEmail(user.getEmail()) == user;
+        if (userExists){
+            throw new IllegalStateException("Email already taken");
+        }
+        String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+
+        String token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(10),
+                user
+        );
+        confirmationTokenService.saveConfirmationToken(confirmationToken);
+        userRepository.save(user);
+        return token;
+    }
+
+    @Override
+    public List<TaskDto> fetchUserTasks(String username) {
+        return myMethods.convertListToTaskDtos
+                (this.userRepository.getTasksForUser(this.userRepository.findByUsername(username).getId())
+                        .stream()
+                        .map(id -> this.toDoListRepository.findById(Long.valueOf(id)).get())
+                        .collect(Collectors.toList()));
     }
 
     @Override
@@ -75,12 +100,12 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<TaskDto> fetchAllUserTasks(long id) {
-        IntStream taskids = Arrays.stream(this.userRepository.findById(id).getUser_Tasks());
-        Stream<Task> user_tasks = taskids.mapToObj(taskid -> this.toDoListRepository.findById((long) taskid).get());
-        List<Task> result = user_tasks.collect(Collectors.toList());
-        return myMethods.convertListToTaskDtos(result);
+    public void enableUser(String email) {
+        this.userRepository.enableUser(email);
     }
 
-
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return this.userRepository.findByUsername(username);
+    }
 }

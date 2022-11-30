@@ -21,4 +21,5 @@ public interface ToDoListService {
      List<TaskDto> fetchTasksByDate(Instant date);
 
      void removeTask(Task task);
+
 }

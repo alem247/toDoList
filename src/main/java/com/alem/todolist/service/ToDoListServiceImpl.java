@@ -18,7 +18,6 @@ public class ToDoListServiceImpl implements ToDoListService{
 
     @Autowired
     public ToDoListServiceImpl(ToDoListRepository toDoListRepository){
-        super();
         this.toDoListRepository = toDoListRepository;
     }
 
@@ -52,5 +51,6 @@ public class ToDoListServiceImpl implements ToDoListService{
     public void removeTask(Task task) {
         this.toDoListRepository.delete(task);
     }
+
 
 }

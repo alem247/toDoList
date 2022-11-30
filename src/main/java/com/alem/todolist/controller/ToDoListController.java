@@ -11,6 +11,7 @@ import com.alem.todolist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/api/tasks")
 public class ToDoListController {
     private ToDoListService toDoListService;
 
@@ -40,28 +41,26 @@ public class ToDoListController {
         return this.toDoListService.getTask(id);
     }
 
-    @PostMapping(produces = "application/json")
-    public TaskDto addTask(Task task){
+    @PostMapping(value = "/addTask", produces = "application/json")
+    public TaskDto addTask(Task task) {
         return toDoListService.addNewTask(task);
     }
 
     @GetMapping(value = "/forDay/{date}")
-    public List<TaskDto> printTasksForGivenDate(@PathVariable String date){
-        String[] date_data = date.split("_");
-        String date_joined = String.join("-", date_data);
-        LocalDate ld = LocalDate.parse(date_joined);
+    public List<TaskDto> printTasksForGivenDate
+            (@PathVariable @Pattern(regexp = "\"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"") String date) {
         return toDoListService.fetchTasksByDate
-                (ld.atStartOfDay(ZoneId.of("Europe/Ljubljana")).toInstant());
+                (LocalDate.parse(date).atStartOfDay(ZoneId.of("Europe/Ljubljana")).toInstant());
     }
 
-    @GetMapping(value ="/forGroup/{group}")
-    public List<TaskDto> printTasksForGivenGroup(@PathVariable String group){
-       return toDoListService.fetchTasksByGroup(group);
+    @GetMapping(value = "/forGroup/{group}")
+    public List<TaskDto> printTasksForGivenGroup(@PathVariable String group) {
+        return toDoListService.fetchTasksByGroup(group);
     }
 
-    @GetMapping(value = "/forUser/{id}")
-    public List<TaskDto> printTasksForGivenUser(@PathVariable long id){
-        return userService.fetchAllUserTasks(id);
+    @GetMapping(value = "/forUser/{username}")
+    public List<TaskDto> printTasksForGivenUser(@PathVariable String username) {
+        return userService.fetchUserTasks(username);
     }
 
     @DeleteMapping("/{id}")
